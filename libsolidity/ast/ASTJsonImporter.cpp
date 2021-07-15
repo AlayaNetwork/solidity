@@ -22,18 +22,21 @@
  */
 
 #include <libsolidity/ast/ASTJsonImporter.h>
-#include <libsolidity/ast/AsmJsonImporter.h>
-#include <liblangutil/Scanner.h>
+
+#include <libyul/AsmJsonImporter.h>
+#include <libyul/AsmParser.h>
+#include <libyul/AST.h>
 #include <libyul/Dialect.h>
+#include <libyul/backends/evm/EVMDialect.h>
+
+#include <liblangutil/ErrorReporter.h>
+#include <liblangutil/Exceptions.h>
+#include <liblangutil/Scanner.h>
+#include <liblangutil/SourceLocation.h>
+#include <liblangutil/Token.h>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
-#include <liblangutil/Token.h>
-#include <libyul/AsmParser.h>
-#include <libyul/backends/evm/EVMDialect.h>
-#include <liblangutil/SourceLocation.h>
-#include <liblangutil/Exceptions.h>
-#include <liblangutil/ErrorReporter.h>
-
 
 using namespace std;
 
@@ -454,7 +457,6 @@ ASTPointer<VariableDeclaration> ASTJsonImporter::createVariableDeclaration(Json:
 		nullOrCast<Expression>(member(_node, "value")),
 		visibility(_node),
 		_node["documentation"].isNull() ? nullptr : createDocumentation(member(_node, "documentation")),
-		memberAsBool(_node, "stateVariable"),
 		_node.isMember("indexed") ? memberAsBool(_node, "indexed") : false,
 		mutability,
 		_node["overrides"].isNull() ? nullptr : createOverrideSpecifier(member(_node, "overrides")),
@@ -570,7 +572,7 @@ ASTPointer<InlineAssembly> ASTJsonImporter::createInlineAssembly(Json::Value con
 	astAssert(m_evmVersion == evmVersion, "Imported tree evm version differs from configured evm version!");
 
 	yul::Dialect const& dialect = yul::EVMDialect::strictAssemblyForEVM(evmVersion.value());
-	shared_ptr<yul::Block> operations = make_shared<yul::Block>(AsmJsonImporter(m_currentSourceName).createBlock(member(_node, "AST")));
+	shared_ptr<yul::Block> operations = make_shared<yul::Block>(yul::AsmJsonImporter(m_currentSourceName).createBlock(member(_node, "AST")));
 	return createASTNode<InlineAssembly>(
 		_node,
 		nullOrASTString(_node, "documentation"),

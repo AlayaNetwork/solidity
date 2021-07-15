@@ -163,6 +163,22 @@ auto applyMap(Container const& _c, Callable&& _op, OutputContainer _oc = OutputC
 	return _oc;
 }
 
+/// Filter a vector.
+/// Returns a copy of the vector after only taking indices `i` such that `_mask[i]` is true.
+template<typename T>
+std::vector<T> filter(std::vector<T> const& _vec, std::vector<bool> const& _mask)
+{
+	assert(_vec.size() == _mask.size());
+
+	std::vector<T> ret;
+
+	for (size_t i = 0; i < _mask.size(); ++i)
+		if (_mask[i])
+			ret.push_back(_vec[i]);
+
+	return ret;
+}
+
 /// Functional fold.
 /// Given a container @param _c, an initial value @param _acc,
 /// and a binary operator @param _binaryOp(T, U), accumulate
@@ -207,6 +223,13 @@ std::map<V, K> invertMap(std::map<K, V> const& originalMap)
 	}
 
 	return inverseMap;
+}
+
+/// Returns a set of keys of a map.
+template <typename K, typename V>
+std::set<K> keys(std::map<K, V> const& _map)
+{
+	return applyMap(_map, [](auto const& _elem) { return _elem.first; }, std::set<K>{});
 }
 
 // String conversion functions, mainly to/from hex/nibble/byte representations.
@@ -449,14 +472,19 @@ void iterateReplacingWindow(std::vector<T>& _vector, F const& _f)
 }
 
 /// @returns true iff @a _str passess the bech32 address checksum test.
-bool passesAddressChecksum(std::string const& _str);
-
+/// @param _strict if false, hex strings with only uppercase or only lowercase letters
+/// are considered valid.
+bool passesAddressChecksum(std::string const& _str, bool _strict);
 
 /** Decode a Bech32 string. Returns (hrp, data). Empty hrp means failure. */
 std::pair<std::string, bytes> bech32decode(const std::string& str);
 
 /** Decode a bech32 address. return witprog. */
 bytes decodeAddress(const std::string& hrp, const std::string& addr);
+
+/// @returns the checksummed version of an eip55 address
+/// @param hex strings that look like an eip55 address
+std::string getEIP55ChecksummedAddress(std::string const& _addr);
 
 bool isValidHex(std::string const& _string);
 bool isValidDecimal(std::string const& _string);

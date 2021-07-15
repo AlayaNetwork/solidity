@@ -29,12 +29,14 @@ detect_stray_source_files("${contracts_sources}" "contracts/")
 set(libsolutil_sources
     libsolutil/Checksum.cpp
     libsolutil/CommonData.cpp
+    libsolutil/FixedHash.cpp
     libsolutil/IndentedWriter.cpp
     libsolutil/IpfsHash.cpp
     libsolutil/IterateReplacing.cpp
     libsolutil/JSON.cpp
     libsolutil/Keccak256.cpp
     libsolutil/LazyInit.cpp
+    libsolutil/LEB128.cpp
     libsolutil/StringUtils.cpp
     libsolutil/SwarmHash.cpp
     libsolutil/UTF8.cpp
@@ -79,9 +81,6 @@ set(libsolidity_sources
     libsolidity/SemanticTest.cpp
     libsolidity/SemanticTest.h
     libsolidity/SemVerMatcher.cpp
-    libsolidity/SMTChecker.cpp
-    libsolidity/SMTCheckerJSONTest.cpp
-    libsolidity/SMTCheckerJSONTest.h
     libsolidity/SMTCheckerTest.cpp
     libsolidity/SMTCheckerTest.h
     libsolidity/SolidityCompiler.cpp

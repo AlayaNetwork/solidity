@@ -20,5 +20,4 @@ contract C
 	}
 }
 // ----
-// Warning 4661: (436-453): Assertion violation happens here
-// Warning 4661: (436-453): Assertion violation happens here
+// Warning 6328: (436-453): CHC: Assertion violation happens here.\nCounterexample:\narray2d = []\nx = 7719\ny = 0\nc = [1236, 8, 8, 8, 8, 8, 8]\n\n\nTransaction trace:\nconstructor()\nState: array2d = []\ng(7719, 0, [1236, 8, 8, 8, 8, 8, 8])

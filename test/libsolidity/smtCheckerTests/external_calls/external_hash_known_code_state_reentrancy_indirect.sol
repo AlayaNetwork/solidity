@@ -3,7 +3,7 @@ pragma experimental SMTChecker;
 contract Other {
 	C c;
 	function h() public {
-		c.setOwner(address(uint160(0)));
+		c.setOwner(address(0));
 	}
 }
 
@@ -41,7 +41,8 @@ contract C {
 		return y;
 	}
 }
+// ====
+// SMTIgnoreCex: yes
 // ----
-// Warning 5084: (100-110): Type conversion is not yet fully supported and might yield false positives.
-// Warning 4661: (468-482): Assertion violation happens here
-// Warning 4661: (486-512): Assertion violation happens here
+// Warning 6328: (452-466): CHC: Assertion violation happens here.
+// Warning 6328: (470-496): CHC: Assertion violation happens here.

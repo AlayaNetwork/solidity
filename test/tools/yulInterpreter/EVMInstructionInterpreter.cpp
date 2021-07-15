@@ -24,7 +24,7 @@
 #include <test/tools/yulInterpreter/Interpreter.h>
 
 #include <libyul/backends/evm/EVMDialect.h>
-#include <libyul/AsmData.h>
+#include <libyul/AST.h>
 
 #include <libevmasm/Instruction.h>
 
@@ -451,7 +451,8 @@ u256 EVMInstructionInterpreter::evalBuiltin(
 		else
 		{
 			// Force different value than for datasize
-			arg[31] += 2;
+			arg[31]++;
+			arg[31]++;
 			return u256(keccak256(arg)) & 0xfff;
 		}
 	}

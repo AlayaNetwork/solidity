@@ -7,7 +7,7 @@ options { tokenVocab=SolidityLexer; }
 
 /**
  * On top level, Solidity allows pragmas, import directives, and
- * definitions of contracts, interfaces, libraries, structs and enums.
+ * definitions of contracts, interfaces, libraries, structs, enums and constants.
  */
 sourceUnit: (
 	pragmaDirective
@@ -16,6 +16,7 @@ sourceUnit: (
 	| interfaceDefinition
 	| libraryDefinition
 	| functionDefinition
+	| constantVariableDeclaration
 	| structDefinition
 	| enumDefinition
 )* EOF;
@@ -83,7 +84,8 @@ contractBodyElement:
 	constructorDefinition
 	| functionDefinition
 	| modifierDefinition
-	| fallbackReceiveFunctionDefinition
+	| fallbackFunctionDefinition
+	| receiveFunctionDefinition
 	| structDefinition
 	| enumDefinition
 	| stateVariableDeclaration
@@ -188,9 +190,32 @@ locals[
 	(Semicolon | body=block);
 
 /**
- * Definitions of the special fallback and receive functions.
+ * Definition of the special fallback function.
  */
-fallbackReceiveFunctionDefinition
+fallbackFunctionDefinition
+locals[
+	boolean visibilitySet = false,
+	boolean mutabilitySet = false,
+	boolean virtualSet = false,
+	boolean overrideSpecifierSet = false,
+	boolean hasParameters = false
+]
+:
+	kind=Fallback LParen (parameterList { $hasParameters = true; } )? RParen
+	(
+		{!$visibilitySet}? External {$visibilitySet = true;}
+		| {!$mutabilitySet}? stateMutability {$mutabilitySet = true;}
+		| modifierInvocation
+		| {!$virtualSet}? Virtual {$virtualSet = true;}
+		| {!$overrideSpecifierSet}? overrideSpecifier {$overrideSpecifierSet = true;}
+	)*
+	( {$hasParameters}? Returns LParen returnParameters=parameterList RParen | {!$hasParameters}? )
+	(Semicolon | body=block);
+
+/**
+ * Definition of the special receive function.
+ */
+receiveFunctionDefinition
 locals[
 	boolean visibilitySet = false,
 	boolean mutabilitySet = false,
@@ -198,10 +223,10 @@ locals[
 	boolean overrideSpecifierSet = false
 ]
 :
-	kind=(Fallback | Receive) LParen RParen
+	kind=Receive LParen RParen
 	(
-		{!$visibilitySet}? visibility {$visibilitySet = true;}
-		| {!$mutabilitySet}? stateMutability {$mutabilitySet = true;}
+		{!$visibilitySet}? External {$visibilitySet = true;}
+		| {!$mutabilitySet}? Payable {$mutabilitySet = true;}
 		| modifierInvocation
 		| {!$virtualSet}? Virtual {$virtualSet = true;}
 		| {!$overrideSpecifierSet}? overrideSpecifier {$overrideSpecifierSet = true;}
@@ -238,6 +263,17 @@ locals [boolean constantnessSet = false, boolean visibilitySet = false, boolean 
 	)*
 	name=identifier
 	(Assign initialValue=expression)?
+	Semicolon;
+
+/**
+ * The declaration of a constant variable.
+ */
+constantVariableDeclaration
+:
+	type=typeName
+	Constant
+	name=identifier
+	Assign initialValue=expression
 	Semicolon;
 
 /**

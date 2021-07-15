@@ -11,4 +11,4 @@ contract C
 	}
 }
 // ----
-// Warning 6328: (274-302): Assertion violation happens here
+// Warning 6328: (274-302): CHC: Assertion violation happens here.\nCounterexample:\narray = []\nx = 1236\ny = 38\nz = 7719\nt = 1236\nw = 38\nv = 7719\n\n\nTransaction trace:\nconstructor()\nState: array = []\nf(1236, 38, 7719, 1236, 38, 7719)

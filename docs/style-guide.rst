@@ -300,7 +300,7 @@ Within a grouping, place the ``view`` and ``pure`` functions last.
 Yes::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
     contract A {
         constructor() {
@@ -337,7 +337,7 @@ Yes::
 No::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
     contract A {
 
@@ -560,7 +560,7 @@ Yes::
         return x + 1;
     }
 
-    function increment(uint x) public pure onlyowner returns (uint) {
+    function increment(uint x) public pure onlyOwner returns (uint) {
         return x + 1;
     }
 
@@ -596,7 +596,7 @@ Yes::
         return balanceOf[from];
     }
 
-    function shutdown() public onlyowner {
+    function shutdown() public onlyOwner {
         selfdestruct(owner);
     }
 
@@ -606,7 +606,7 @@ No::
         return balanceOf[from];
     }
 
-    function shutdown() onlyowner public {
+    function shutdown() onlyOwner public {
         selfdestruct(owner);
     }
 
@@ -663,7 +663,7 @@ Yes::
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
         public
-        onlyowner
+        onlyOwner
         priced
         returns (address)
     {
@@ -676,7 +676,7 @@ Yes::
         address z,
     )
         public
-        onlyowner
+        onlyOwner
         priced
         returns (address)
     {
@@ -687,21 +687,21 @@ No::
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
                                           public
-                                          onlyowner
+                                          onlyOwner
                                           priced
                                           returns (address) {
         doSomething();
     }
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
-        public onlyowner priced returns (address)
+        public onlyOwner priced returns (address)
     {
         doSomething();
     }
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
         public
-        onlyowner
+        onlyOwner
         priced
         returns (address) {
         doSomething();
@@ -758,7 +758,7 @@ manner as modifiers if the function declaration is long or hard to read.
 Yes::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
     // Base contracts just to make this compile
     contract B {
@@ -790,7 +790,7 @@ Yes::
 No::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
 
     // Base contracts just to make this compile
@@ -1012,7 +1012,7 @@ As shown in the example below, if the contract name is ``Congress`` and the libr
 Yes::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
 
     // Owned.sol
@@ -1048,7 +1048,7 @@ and in ``Congress.sol``::
 No::
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.6.99 <0.8.0;
+    pragma solidity ^0.7.0;
 
 
     // owned.sol
@@ -1070,6 +1070,10 @@ No::
     }
 
 and in ``Congress.sol``::
+
+    // SPDX-License-Identifier: GPL-3.0
+    pragma solidity ^0.7.0;
+
 
     import "./owned.sol";
 

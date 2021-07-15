@@ -9,8 +9,8 @@ contract State {
 contract C {
 	address owner;
 	function setOwner() public {
-		owner = address(uint160(0));
+		owner = address(0);
 	}
 }
 // ----
-// Warning 5084: (206-216): Type conversion is not yet fully supported and might yield false positives.
+// Warning 6321: (85-89): Unnamed return variable can remain unassigned. Add an explicit return with value to all non-reverting code paths or name the variable.

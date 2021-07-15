@@ -47,6 +47,7 @@ namespace solidity::frontend
 
 class Type;
 using TypePointer = Type const*;
+using namespace util;
 
 struct ASTAnnotation
 {
@@ -88,11 +89,13 @@ struct StructurallyDocumentedAnnotation
 struct SourceUnitAnnotation: ASTAnnotation
 {
 	/// The "absolute" (in the compiler sense) path of this source unit.
-	std::string path;
+	SetOnce<std::string> path;
 	/// The exported symbols (all global symbols).
-	std::map<ASTString, std::vector<Declaration const*>> exportedSymbols;
+	SetOnce<std::map<ASTString, std::vector<Declaration const*>>> exportedSymbols;
 	/// Experimental features.
 	std::set<ExperimentalFeature> experimentalFeatures;
+	/// Using the new ABI coder. Set to `false` if using ABI coder v1.
+	SetOnce<bool> useABICoderV2;
 };
 
 struct ScopableAnnotation
@@ -108,10 +111,10 @@ struct ScopableAnnotation
 	virtual ~ScopableAnnotation() = default;
 
 	/// The scope this declaration resides in. Can be nullptr if it is the global scope.
-	/// Available only after name and type resolution step.
+	/// Filled by the Scoper.
 	ASTNode const* scope = nullptr;
 	/// Pointer to the contract this declaration resides in. Can be nullptr if the current scope
-	/// is not part of a contract. Available only after name and type resolution step.
+	/// is not part of a contract. Filled by the Scoper.
 	ContractDefinition const* contract = nullptr;
 };
 
@@ -122,7 +125,7 @@ struct DeclarationAnnotation: ASTAnnotation, ScopableAnnotation
 struct ImportAnnotation: DeclarationAnnotation
 {
 	/// The absolute path of the source unit to import.
-	std::string absolutePath;
+	SetOnce<std::string> absolutePath;
 	/// The actual source unit.
 	SourceUnit const* sourceUnit = nullptr;
 };
@@ -130,7 +133,7 @@ struct ImportAnnotation: DeclarationAnnotation
 struct TypeDeclarationAnnotation: DeclarationAnnotation
 {
 	/// The name of this type, prefixed by proper namespaces if globally accessible.
-	std::string canonicalName;
+	SetOnce<std::string> canonicalName;
 };
 
 struct StructDeclarationAnnotation: TypeDeclarationAnnotation
@@ -149,7 +152,7 @@ struct StructDeclarationAnnotation: TypeDeclarationAnnotation
 struct ContractDefinitionAnnotation: TypeDeclarationAnnotation, StructurallyDocumentedAnnotation
 {
 	/// List of functions and modifiers without a body. Can also contain functions from base classes.
-	std::vector<Declaration const*> unimplementedDeclarations;
+	std::optional<std::vector<Declaration const*>> unimplementedDeclarations;
 	/// List of all (direct and indirect) base contracts in order from derived to
 	/// base, including the contract itself.
 	std::vector<ContractDefinition const*> linearizedBaseContracts;
@@ -196,8 +199,8 @@ struct InlineAssemblyAnnotation: StatementAnnotation
 	struct ExternalIdentifierInfo
 	{
 		Declaration const* declaration = nullptr;
-		bool isSlot = false; ///< Whether the storage slot of a variable is queried.
-		bool isOffset = false; ///< Whether the intra-slot offset of a storage variable is queried.
+		/// Suffix used, one of "slot", "offset", "length" or empty.
+		std::string suffix;
 		size_t valueSize = size_t(-1);
 	};
 
@@ -243,26 +246,38 @@ struct ExpressionAnnotation: ASTAnnotation
 	/// Inferred type of the expression.
 	TypePointer type = nullptr;
 	/// Whether the expression is a constant variable
-	bool isConstant = false;
+	SetOnce<bool> isConstant;
 	/// Whether the expression is pure, i.e. compile-time constant.
-	bool isPure = false;
+	SetOnce<bool> isPure;
 	/// Whether it is an LValue (i.e. something that can be assigned to).
-	bool isLValue = false;
+	SetOnce<bool> isLValue;
 	/// Whether the expression is used in a context where the LValue is actually required.
 	bool willBeWrittenTo = false;
 	/// Whether the expression is an lvalue that is only assigned.
 	/// Would be false for --, ++, delete, +=, -=, ....
+	/// Only relevant if isLvalue == true
 	bool lValueOfOrdinaryAssignment = false;
 
 	/// Types and - if given - names of arguments if the expr. is a function
 	/// that is called, used for overload resolution
 	std::optional<FuncCallArguments> arguments;
+
+	/// True if the expression consists solely of the name of the function and the function is called immediately
+	/// instead of being stored or processed. The name may be qualified with the name of a contract, library
+	/// module, etc., that clarifies the scope. For example: `m.L.f()`, where `m` is a module, `L` is a library
+	/// and `f` is a function is a direct call. This means that the function to be called is known at compilation
+	/// time and it's not necessary to rely on any runtime dispatch mechanism to resolve it.
+	/// Note that even the simplest expressions, like `(f)()`, result in an indirect call even if they consist of
+	/// values known at compilation time.
+	bool calledDirectly = false;
 };
 
 struct IdentifierAnnotation: ExpressionAnnotation
 {
 	/// Referenced declaration, set at latest during overload resolution stage.
 	Declaration const* referencedDeclaration = nullptr;
+	/// What kind of lookup needs to be done (static, virtual, super) find the declaration.
+	SetOnce<VirtualLookup> requiredLookup;
 	/// List of possible declarations it could refer to (can contain duplicates).
 	std::vector<Declaration const*> candidateDeclarations;
 	/// List of possible declarations it could refer to.
@@ -273,6 +288,8 @@ struct MemberAccessAnnotation: ExpressionAnnotation
 {
 	/// Referenced declaration, set at latest during overload resolution stage.
 	Declaration const* referencedDeclaration = nullptr;
+	/// What kind of lookup needs to be done (static, virtual, super) find the declaration.
+	SetOnce<VirtualLookup> requiredLookup;
 };
 
 struct BinaryOperationAnnotation: ExpressionAnnotation
