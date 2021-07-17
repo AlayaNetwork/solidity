@@ -17,7 +17,7 @@ contract ClientReceipt {
 // ====
 // compileViaYul: also
 // ----
-// constructor(), 2000 wei ->
+// constructor(), 2000 von ->
 // gas irOptimized: 191881
 // gas legacy: 235167
 // gas legacyOptimized: 180756

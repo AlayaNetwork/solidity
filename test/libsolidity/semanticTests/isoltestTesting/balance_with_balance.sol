@@ -4,5 +4,5 @@ contract ClientReceipt {
 // ====
 // compileViaYul: also
 // ----
-// constructor(), 1000 wei ->
+// constructor(), 1000 von ->
 // balance -> 1000

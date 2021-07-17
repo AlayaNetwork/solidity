@@ -1,6 +1,6 @@
 contract C {
     modifier tryCircumvent {
-        if (false) _; // avoid the function, we should still not accept ether
+        if (false) _; // avoid the function, we should still not accept atp
     }
     function f() tryCircumvent public returns (uint) {
         return msgvalue();
@@ -13,5 +13,5 @@ contract C {
 // compileViaYul: also
 // compileToEwasm: also
 // ----
-// f(), 27 wei -> FAILURE
+// f(), 27 von -> FAILURE
 // balance -> 0

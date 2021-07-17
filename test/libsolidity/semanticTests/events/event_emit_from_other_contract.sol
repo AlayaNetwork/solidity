@@ -18,5 +18,5 @@ contract C {
 // ----
 // constructor() ->
 // gas legacy: 249112
-// deposit(bytes32), 18 wei: 0x1234 ->
+// deposit(bytes32), 18 von: 0x1234 ->
 // ~ emit Deposit(address,bytes32,uint256) from 0xf01f7809444bd9a93a854361c6fae3f23d9e23db: #0x0fdd67305928fcac8d213d1e47bfa6165cd0b87b, #0x1234, 0x00

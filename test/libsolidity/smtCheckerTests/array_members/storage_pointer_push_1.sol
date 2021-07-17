@@ -16,4 +16,4 @@ contract C {
 // ====
 // SMTEngine: all
 // ----
-// Warning 6328: (152-181): CHC: Assertion violation happens here.\nCounterexample:\narray2d = [[], [], []]\n\nTransaction trace:\nC.constructor()\nState: array2d = []\nC.l()\n    C.s() -- internal call
+// Warning 6328: (152-181): CHC: Assertion violation happens here.

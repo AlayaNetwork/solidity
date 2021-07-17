@@ -4,5 +4,5 @@ contract ClientReceipt {
 // ====
 // compileViaYul: also
 // ----
-// constructor(), 1 ether ->
+// constructor(), 1 atp ->
 // balance -> 1000000000000000000

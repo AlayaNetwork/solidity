@@ -17,7 +17,7 @@ contract C {
 // EVMVersion: >=byzantium
 // compileViaYul: also
 // ----
-// constructor(), 20 wei
+// constructor(), 20 von 
 // gas irOptimized: 259072
 // gas legacy: 288299
 // gas legacyOptimized: 177933

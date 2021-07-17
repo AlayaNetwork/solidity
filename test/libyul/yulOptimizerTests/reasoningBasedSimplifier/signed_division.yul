@@ -26,6 +26,9 @@
 //     if sgt(sub(y, 1), y)
 //     {
 //         if 1 { sstore(0, 7) }
-//         if iszero(eq(y, t)) { if 1 { sstore(1, 7) } }
+//         if iszero(eq(y, t))
+//         {
+//             if eq(sdiv(t, sub(0, 1)), sub(0, t)) { sstore(1, 7) }
+//         }
 //     }
 // }

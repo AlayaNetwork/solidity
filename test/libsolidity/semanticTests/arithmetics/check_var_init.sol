@@ -17,5 +17,5 @@ contract D {
 // compileViaYul: also
 // ----
 // f() -> FAILURE, hex"4e487b71", 0x11
-// g(), 100 wei -> 1
+// g(), 100 von -> 1
 // gas legacy: 101918
