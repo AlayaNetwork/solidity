@@ -713,16 +713,13 @@ bool CommandLineInterface::parseLibraryOption(string const& _input)
 				return false;
 			}
 
+			bool isEIP55 = false;
 			if (addrString.substr(0, 2) == "0x")
-				addrString = addrString.substr(2);
-			else
 			{
-				serr() << "The address " << addrString << " is not prefixed with \"0x\"." << endl;
-				serr() << "Note that the address must be prefixed with \"0x\"." << endl;
-				return false;
+				addrString = addrString.substr(2);
+				isEIP55 = true;
 			}
-
-			if (addrString.length() != 40)
+			else if (addrString.length() != 40 && addrString.length() != 42)
 			{
 				serr() << "Invalid length for address for library \"" << libName << "\": " << addrString.length() << " instead of 40 characters." << endl;
 				return false;
@@ -730,10 +727,23 @@ bool CommandLineInterface::parseLibraryOption(string const& _input)
 			if (!passesAddressChecksum(addrString, false))
 			{
 				serr() << "Invalid checksum on address for library \"" << libName << "\": " << addrString << endl;
-				serr() << "The correct checksum is " << getChecksummedAddress(addrString) << endl;
 				return false;
 			}
-			bytes binAddr = fromHex(addrString);
+
+			bytes binAddr;
+			if (isEIP55)
+			{
+				binAddr = fromHex(addrString);
+			}
+			else 
+			{
+				pair<string,bytes> bech32 = bech32decode(boost::erase_all_copy(addrString, "_"));
+				string hrp = bech32.first;
+				if (hrp != "atp" && hrp != "atx") {
+					return false;
+				}
+				binAddr = bech32.second;	
+			}		
 			h160 address(binAddr, h160::AlignRight);
 			if (binAddr.size() > 20 || address == h160())
 			{

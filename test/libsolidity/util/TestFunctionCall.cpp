@@ -51,8 +51,8 @@ string TestFunctionCall::format(
 		string colon = formatToken(Token::Colon);
 		string comma = formatToken(Token::Comma);
 		string comment = formatToken(Token::Comment);
-		string ether = formatToken(Token::Ether);
-		string wei = formatToken(Token::Wei);
+		string atp = formatToken(Token::Atp);
+		string von = formatToken(Token::Von);
 		string newline = formatToken(Token::Newline);
 		string failure = formatToken(Token::Failure);
 
@@ -68,11 +68,11 @@ string TestFunctionCall::format(
 		{
 			switch (m_call.value.unit)
 			{
-			case FunctionValueUnit::Ether:
-				stream << comma << ws << (m_call.value.value / exp256(10, 18)) << ws << ether;
+			case FunctionValueUnit::Atp:
+				stream << comma << ws << (m_call.value.value / exp256(10, 18)) << ws << atp;
 				break;
-			case FunctionValueUnit::Wei:
-				stream << comma << ws << m_call.value.value << ws << wei;
+			case FunctionValueUnit::Von:
+				stream << comma << ws << m_call.value.value << ws << von;
 				break;
 			default:
 				soltestAssert(false, "");

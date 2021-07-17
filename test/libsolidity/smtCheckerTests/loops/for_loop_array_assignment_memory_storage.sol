@@ -16,10 +16,9 @@ contract LoopFor2 {
 			// Disabled because of Spacer's nondeterminism.
 			//c[i] = b[i];
 		}
-		// Removed because current Spacer seg faults in cex generation.
-		//assert(b[0] == c[0]);
-		//assert(a[0] == 900);
-		//assert(b[0] == 900);
+		assert(b[0] == c[0]);
+		assert(a[0] == 900);
+		assert(b[0] == 900);
 	}
 }
 // ====

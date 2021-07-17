@@ -7,5 +7,5 @@ contract C {
 // compileViaYul: also
 // compileToEwasm: also
 // ----
-// f(), 1 ether -> 1000000000000000000
-// f(), 1 wei -> 1
+// f(), 1 atp -> 1000000000000000000
+// f(), 1 von -> 1

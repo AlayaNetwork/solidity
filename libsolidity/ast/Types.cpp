@@ -439,8 +439,22 @@ string AddressType::canonicalName() const
 u256 AddressType::literalValue(Literal const* _literal) const
 {
 	solAssert(_literal, "");
-	solAssert(_literal->value().substr(0, 2) == "0x", "");
+	string prefix = _literal->value().substr(0, 3);	
+	bool isBech32 = false;
+	if (prefix == "atp" || prefix == "atx")
+	{
+	    isBech32 =  true;
+	}
+	solAssert(isBech32 || prefix.substr(0, 2) == "0x", "");
+
+	if(isBech32)
+	{
+		bytes r = solidity::util::decodeAddress(prefix, _literal->valueWithoutUnderscores());
+		solAssert(r.size() == 20, "decodeAddress failed");
+		return u256(solidity::util::toHex(r, solidity::util::HexPrefix::Add));
+	}
 	return u256(_literal->valueWithoutUnderscores());
+
 }
 
 TypeResult AddressType::unaryOperatorResult(Token _operator) const
@@ -886,13 +900,13 @@ tuple<bool, rational> RationalNumberType::isValidLiteral(Literal const& _literal
 	switch (_literal.subDenomination())
 	{
 		case Literal::SubDenomination::None:
-		case Literal::SubDenomination::Wei:
+		case Literal::SubDenomination::Von:
 		case Literal::SubDenomination::Second:
 			break;
-		case Literal::SubDenomination::Gwei:
+		case Literal::SubDenomination::Gvon:
 			value *= bigint("1000000000");
 			break;
-		case Literal::SubDenomination::Ether:
+		case Literal::SubDenomination::Atp:
 			value *= bigint("1000000000000000000");
 			break;
 		case Literal::SubDenomination::Minute:
@@ -2958,7 +2972,7 @@ BoolResult FunctionType::isImplicitlyConvertibleTo(Type const& _convertTo) const
 	if (m_stateMutability != StateMutability::Payable && convertTo.stateMutability() == StateMutability::Payable)
 		return false;
 
-	// payable should be convertible to non-payable, because you are free to pay 0 ether
+	// payable should be convertible to non-payable, because you are free to pay 0 atp
 	if (m_stateMutability == StateMutability::Payable && convertTo.stateMutability() == StateMutability::NonPayable)
 		return true;
 
