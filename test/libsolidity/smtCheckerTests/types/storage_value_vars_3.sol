@@ -4,19 +4,19 @@ contract C
     function f(uint x) public {
         if (x == 0)
         {
-            a = 'atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqgqwalt0t';
+            a = 0x0000000000000000000000000000000000000100;
             b = true;
         }
         else
         {
-            a = 'atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqsqtk663f';
+            a = 0x0000000000000000000000000000000000000200;
             b = false;
         }
-        assert(b == (a < 'atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqsqtk663f'));
+        assert(b == (a < 0x0000000000000000000000000000000000000200));
     }
 
     function g() public view {
-        require(a < 'atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqgqwalt0t');
+        require(a < 0x0000000000000000000000000000000000000100);
         assert(c >= 0);
     }
     address a;

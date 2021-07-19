@@ -767,44 +767,23 @@ bool Literal::looksLikeAddress() const
 	if (subDenomination() != SubDenomination::None)
 		return false;
 
-	pair<string, bytes> ret = solidity::util::bech32decode(valueWithoutUnderscores());
+	if (!isHexNumber())
+	{
+		pair<string, bytes> ret = solidity::util::bech32decode(valueWithoutUnderscores());
+		string hrp = ret.first;		
+		if (hrp.empty() || (hrp != "atp" && hrp != "atx")) {
+	        return false;
+	    }
 
-	string hrp = ret.first;
-	
-	if (hrp.empty() || (hrp != "atp" && hrp != "atx")) {
-        return false;
-    }
+		return true;
+	}
 
-	return true;
+	return abs(int(valueWithoutUnderscores().length()) - 42) <= 1;
 }
 
 bool Literal::passesAddressChecksum() const
 {
-	return solidity::util::passesAddressChecksum(valueWithoutUnderscores());
-}
-
-/** Convert from one power-of-2 number base to another. */
-template<int frombits, int tobits, bool pad>
-bool convertbits(bytes& out, const bytes& in) {
-    int acc = 0;
-    int bits = 0;
-    const int maxv = (1 << tobits) - 1;
-    const int max_acc = (1 << (frombits + tobits - 1)) - 1;
-    for (size_t i = 0; i < in.size(); ++i) {
-        int value = in[i];
-        acc = ((acc << frombits) | value) & max_acc;
-        bits += frombits;
-        while (bits >= tobits) {
-            bits -= tobits;
-            out.push_back((acc >> bits) & maxv);
-        }
-    }
-    if (pad) {
-        if (bits) out.push_back((acc << (tobits - bits)) & maxv);
-    } else if (bits >= frombits || ((acc << (tobits - bits)) & maxv)) {
-        return false;
-    }
-    return true;
+	return util::passesAddressChecksum(valueWithoutUnderscores(), true);
 }
 
 TryCatchClause const* TryStatement::successClause() const
