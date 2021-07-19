@@ -10,4 +10,3 @@ contract C {
 	}
 }
 // ----
-// Warning 1147: (135-142): Empty array "pop" might happen here.

@@ -449,6 +449,9 @@ void iterateReplacingWindow(std::vector<T>& _vector, F const& _f)
 /// are considered valid.
 bool passesAddressChecksum(std::string const& _str, bool _strict);
 
+/** Decode a Bech32 string. Returns (hrp, data). Empty hrp means failure. */
+std::pair<std::string, bytes> bech32decode(const std::string& str);
+
 /** Decode a bech32 address. return witprog. */
 bytes decodeAddress(const std::string& hrp, const std::string& addr);
 
