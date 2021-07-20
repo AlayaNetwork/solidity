@@ -60,6 +60,17 @@ std::string toHex(T const& _data, int _w = 2, HexPrefix _prefix = HexPrefix::Don
 	return (_prefix == HexPrefix::Add) ? "0x" + ret.str() : ret.str();
 }
 
+enum class HexCase
+{
+	Lower = 0,
+	Upper = 1,
+	Mixed = 2,
+};
+
+/// Convert a series of bytes to the corresponding string of hex duplets,
+/// optionally with "0x" prefix and with uppercase hex letters.
+std::string toHex(bytes const& _data, HexPrefix _prefix = HexPrefix::DontAdd, HexCase _case = HexCase::Lower);
+
 /// Converts a (printable) ASCII hex character into the correspnding integer value.
 /// @example fromHex('A') == 10 && fromHex('f') == 15 && fromHex('5') == 5
 int fromHex(char _i, WhenError _throw);
