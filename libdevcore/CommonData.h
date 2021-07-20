@@ -229,10 +229,14 @@ bool contains(T const& _t, V const& _v)
 	return std::end(_t) != std::find(std::begin(_t), std::end(_t), _v);
 }
 
+/// @returns true iff @a _str passess the hex address checksum test.
+/// @param _strict if false, hex strings with only uppercase or only lowercase letters
+/// are considered valid.
+bool passesAddressChecksum(std::string const& _str, bool _strict);
 
-/// @returns true iff @a _str passess the bech32 address checksum test.
-bool passesAddressChecksum(std::string const& _str);
-
+/// @returns the checksummed version of an address
+/// @param strings that look like an address
+std::string getEIP55ChecksummedAddress(std::string const& _addr);
 
 /** Decode a Bech32 string. Returns (hrp, data). Empty hrp means failure. */
 std::pair<std::string, bytes> bech32decode(const std::string& str);
