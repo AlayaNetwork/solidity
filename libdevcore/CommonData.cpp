@@ -29,26 +29,6 @@
 using namespace std;
 using namespace dev;
 
-string dev::toHex(bytes const& _data, HexPrefix _prefix, HexCase _case)
-{
-	std::ostringstream ret;
-	if (_prefix == HexPrefix::Add)
-		ret << "0x";
-
-	int rix = _data.size() - 1;
-	for (uint8_t c: _data)
-	{
-		auto hexcase = std::nouppercase;
-		if (_case == HexCase::Upper)
-			hexcase = std::uppercase;
-		else if (_case == HexCase::Mixed)
-			hexcase = (rix-- & 2) == 0 ? std::nouppercase : std::uppercase;
-
-		ret << std::hex << hexcase << std::setfill('0') << std::setw(2) << size_t(c);
-	}
-	return ret.str();
-}
-
 int dev::fromHex(char _i, WhenError _throw)
 {
 	if (_i >= '0' && _i <= '9')
@@ -96,13 +76,33 @@ bytes dev::fromHex(std::string const& _s, WhenError _throw)
 
 bool dev::passesAddressChecksum(string const& _str)
 {
-	pair<string,bytes> ret = bech32decode(boost::erase_all_copy(_str, "_"));
-	string hrp = ret.first;
-	if (hrp != "atp" && hrp != "atx") {
+	if (_str.length() != 42 && _str.length() != 40)
 		return false;
+	string s = _str.length() == 42 ? _str : "0x" + _str;
+	
+	string prefix = s.substr(0, 3); 
+	bool isBech32 = false;
+	if (prefix == "atp" || prefix == "atx")
+	{
+		isBech32 =	true;
 	}
+	if(isBech32)
+	{
+		pair<string,bytes> ret = bech32decode(boost::erase_all_copy(_str, "_"));
+		string hrp = ret.first;
+		if (hrp != "atp" && hrp != "atx") {
+			return false;
+		}
+		return true;
+	}
+	
+	if (!_strict && (
+		s.find_first_of("abcdef") == string::npos ||
+		s.find_first_of("ABCDEF") == string::npos
+	))
+		return true;
 
-	return true;
+	return s == dev::getEIP55ChecksummedAddress(s);
 }
 
 

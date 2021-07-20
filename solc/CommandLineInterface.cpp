@@ -491,18 +491,27 @@ bool CommandLineInterface::parseLibraryOption(string const& _input)
 				cerr << "Note that there should not be any whitespace after the colon." << endl;
 				return false;
 			}
-			if (!passesAddressChecksum(addrString))
+			if (!passesAddressChecksum(addrString, false))
 			{
 				cerr << "Invalid checksum on address for library \"" << libName << "\": " << addrString << endl;
 				return false;
 			}
 			
-			pair<string,bytes> bech32 = bech32decode(boost::erase_all_copy(addrString, "_"));
-			string hrp = bech32.first;
-			if (hrp != "atp" && hrp != "atx") {
-				return false;
+			string realValue = boost::erase_all_copy(addrString, "_");
+	        bool isBech32 = boost::starts_with(realValue, "atp") || boost::starts_with(realValue, "atx");
+			bytes binAddr;
+			if(isBech32)
+			{
+				pair<string,bytes> bech32 = bech32decode(realValue);
+				string hrp = bech32.first;
+				if (hrp != "atp" && hrp != "atx") {
+					return false;
+				}
+				binAddr = bech32.second;
 			}
-			bytes binAddr = bech32.second;			
+			else
+				binAddr = fromHex(addrString);
+			
 			h160 address(binAddr, h160::AlignRight);
 			if (binAddr.size() > 20 || address == h160())
 			{
