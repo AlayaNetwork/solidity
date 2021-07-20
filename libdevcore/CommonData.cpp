@@ -119,19 +119,58 @@ bytes dev::fromHex(std::string const& _s, WhenError _throw)
 }
 
 
-bool dev::passesAddressChecksum(string const& _str)
+bool dev::passesAddressChecksum(string const& _str, bool _strict)
 {
-	if (_str.length() != 42)
+	if (_str.length() != 42 && _str.length() != 40)
 		return false;
-
-	pair<string,bytes> ret = bech32decode(boost::erase_all_copy(_str, "_"));
-	string hrp = ret.first;
-	if (hrp != "atp" && hrp != "atx") {
-		return false;
+	string s = _str.length() == 42 ? _str : "0x" + _str;
+	
+	string prefix = s.substr(0, 3); 
+	bool isBech32 = false;
+	if (prefix == "atp" || prefix == "atx")
+	{
+		isBech32 =	true;
 	}
+	if(isBech32)
+	{
+		pair<string,bytes> ret = bech32decode(boost::erase_all_copy(_str, "_"));
+		string hrp = ret.first;
+		if (hrp != "atp" && hrp != "atx") {
+			return false;
+		}
+		return true;
+	}
+	
+	if (!_strict && (
+		s.find_first_of("abcdef") == string::npos ||
+		s.find_first_of("ABCDEF") == string::npos
+	))
+		return true;
 
-	return true;
+	return s == dev::getEIP55ChecksummedAddress(s);
 }
+
+string dev::getEIP55ChecksummedAddress(string const& _addr)
+{
+	string s = _addr.substr(0, 2) == "0x" ? _addr.substr(2) : _addr;
+	assertThrow(s.length() == 40, InvalidAddress, "");
+	assertThrow(s.find_first_not_of("0123456789abcdefABCDEF") == string::npos, InvalidAddress, "");
+
+	h256 hash = keccak256(boost::algorithm::to_lower_copy(s, std::locale::classic()));
+
+	string ret = "0x";
+	for (unsigned i = 0; i < 40; ++i)
+	{
+		char addressCharacter = s[i];
+		uint8_t nibble = hash[i / 2u] >> (4u * (1u - (i % 2u))) & 0xf;
+		if (nibble >= 8)
+			ret += static_cast<char>(toupper(addressCharacter));
+		else
+			ret += static_cast<char>(tolower(addressCharacter));
+	}
+	return ret;
+}
+
 
 bool dev::isValidHex(string const& _string)
 {

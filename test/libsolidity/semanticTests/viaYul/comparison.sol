@@ -1,6 +1,6 @@
 contract C {
     function f(address a) public pure returns (bool) {
-        return a == address('atx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq89qwkc');
+        return a == address(0);
     }
     function g() public pure returns (bool) {
         return bytes3("abc") == bytes4("abc");

@@ -1,6 +1,6 @@
 contract C {
-    address constant a = address("atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdruy9j");
-    address payable constant b = address("atp1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdruy9j");
+    address constant a = address(0);
+    address payable constant b = address(0);
     function f() public pure returns (address, address) {
         return (a,b);
     }

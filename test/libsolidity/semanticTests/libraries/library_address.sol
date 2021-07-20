@@ -8,7 +8,7 @@ library L {
 }
 contract C {
     function addr() public view returns (bool) {
-        return address(L) == address('atx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq89qwkc');
+        return address(L) == address(0);
     }
     function g(uint256 v) public view returns (uint256) {
         return L.f(v);
