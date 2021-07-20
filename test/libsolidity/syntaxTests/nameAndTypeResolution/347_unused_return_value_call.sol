@@ -4,4 +4,4 @@ contract test {
     }
 }
 // ----
-// Warning: (50-115): Return value of low-level calls not used.
+// Warning: (50-75): Return value of low-level calls not used.

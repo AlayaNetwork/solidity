@@ -678,7 +678,7 @@ bool Literal::looksLikeAddress() const
 
 	if (!isHexNumber())
 	{
-		pair<string, bytes> ret = solidity::util::bech32decode(valueWithoutUnderscores());
+		pair<string, bytes> ret = dev::bech32decode(valueWithoutUnderscores());
 		string hrp = ret.first;		
 		if (hrp.empty() || (hrp != "atp" && hrp != "atx")) {
 	        return false;

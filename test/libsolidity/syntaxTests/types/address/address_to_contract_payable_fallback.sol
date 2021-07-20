@@ -6,4 +6,3 @@ contract C {
   }
 }
 // ----
-// ParserError: (74-123): Expected string end-quote.
