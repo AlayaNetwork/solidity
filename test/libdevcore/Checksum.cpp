@@ -35,16 +35,16 @@ BOOST_AUTO_TEST_SUITE(Checksum)
 
 BOOST_AUTO_TEST_CASE(calculate)
 {
-	BOOST_CHECK(!getChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed").empty());
-	BOOST_CHECK(!getChecksummedAddress("0x0123456789abcdefABCDEF0123456789abcdefAB").empty());
+	BOOST_CHECK(!getEIP55ChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed").empty());
+	BOOST_CHECK(!getEIP55ChecksummedAddress("0x0123456789abcdefABCDEF0123456789abcdefAB").empty());
 	// too short
-	BOOST_CHECK_THROW(getChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beae"), InvalidAddress);
-	BOOST_CHECK_THROW(getChecksummedAddress("5aaeb6053f3e94c9b9a09f33669435e7ef1beae"), InvalidAddress);
+	BOOST_CHECK_THROW(getEIP55ChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beae"), InvalidAddress);
+	BOOST_CHECK_THROW(getEIP55ChecksummedAddress("5aaeb6053f3e94c9b9a09f33669435e7ef1beae"), InvalidAddress);
 	// too long
-	BOOST_CHECK_THROW(getChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed1"), InvalidAddress);
-	BOOST_CHECK_THROW(getChecksummedAddress("5aaeb6053f3e94c9b9a09f33669435e7ef1beaed1"), InvalidAddress);
+	BOOST_CHECK_THROW(getEIP55ChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed1"), InvalidAddress);
+	BOOST_CHECK_THROW(getEIP55ChecksummedAddress("5aaeb6053f3e94c9b9a09f33669435e7ef1beaed1"), InvalidAddress);
 	// non-hex character
-	BOOST_CHECK_THROW(getChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaeK"), InvalidAddress);
+	BOOST_CHECK_THROW(getEIP55ChecksummedAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaeK"), InvalidAddress);
 
 	// the official test suite from EIP-55
 	vector<string> cases {
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(calculate)
 	};
 
 	for (size_t i = 0; i < cases.size(); i++)
-		BOOST_REQUIRE_MESSAGE(getChecksummedAddress(cases[i]) == cases[i], cases[i]);
+		BOOST_REQUIRE_MESSAGE(getEIP55ChecksummedAddress(cases[i]) == cases[i], cases[i]);
 }
 
 BOOST_AUTO_TEST_CASE(regular)

@@ -2317,7 +2317,7 @@ void TypeChecker::endVisit(Literal const& _literal)
 	if (_literal.looksLikeAddress())
 	{
 		string msg;
-		if (dev::passesAddressChecksum(_literal.value()))
+		if (dev::passesAddressChecksum(_literal.value(),true))
 		{
 			_literal.annotation().type = make_shared<IntegerType>(160, IntegerType::Modifier::Address);
 		}
