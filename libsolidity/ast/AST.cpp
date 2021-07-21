@@ -595,7 +595,6 @@ bool Literal::looksLikeAddress() const
 }
 bool Literal::passesAddressChecksum() const
 {
-	solAssert(isHexNumber(), "Expected hex number");
 	return dev::passesAddressChecksum(value(), true);
 }
 
