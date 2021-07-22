@@ -4,7 +4,7 @@ contract State {
 	uint x;
 	C c;
 	function f() public returns (uint) {
-		c.setOwner(address(uint160(0)));
+		c.setOwner(address(0));
 		return c.g();
 	}
 }
@@ -33,7 +33,8 @@ contract C {
 		return y;
 	}
 }
+// ====
+// SMTIgnoreCex: yes
 // ----
-// Warning 5084: (124-134): Type conversion is not yet fully supported and might yield false positives.
-// Warning 4661: (397-411): Assertion violation happens here
-// Warning 4661: (415-441): Assertion violation happens here
+// Warning 6328: (381-395): CHC: Assertion violation happens here.
+// Warning 6328: (399-425): CHC: Assertion violation happens here.

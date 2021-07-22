@@ -1,4 +1,4 @@
-pragma experimental SMTChecker;
+experimental SMTChecker;
 
 contract LoopFor2 {
 	uint[] a;

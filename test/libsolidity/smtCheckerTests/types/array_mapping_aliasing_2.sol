@@ -25,6 +25,7 @@ contract C
 		f(severalMaps[x]);
 	}
 }
+// ====
+// SMTIgnoreCex: yes
 // ----
-// Warning 4661: (777-797): Assertion violation happens here
-// Warning 4661: (777-797): Assertion violation happens here
+// Warning 6328: (777-797): CHC: Assertion violation happens here.

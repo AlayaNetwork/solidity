@@ -34,10 +34,9 @@ contract C {
 	function inv() public view {
 		// This is safe but external calls do not yet support the state
 		// of the called contract.
-		assert(owner == address(uint160(0)) || y != z);
+		assert(owner == address(0) || y != z);
 	}
 }
 // ----
-// Warning 4661: (442-468): Assertion violation happens here
-// Warning 5084: (625-635): Type conversion is not yet fully supported and might yield false positives.
-// Warning 4661: (601-647): Assertion violation happens here
+// Warning 6328: (435-461): CHC: Assertion violation happens here.\nCounterexample:\nowner = 0, y = 0, z = 0, s = 0\n\n\n\nTransaction trace:\nconstructor()\nState: owner = (- 1), y = 0, z = 0, s = 0\nf()
+// Warning 6328: (594-631): CHC: Assertion violation happens here.\nCounterexample:\nowner = 1, y = 0, z = 0, s = 0\n\n\n\nTransaction trace:\nconstructor()\nState: owner = 1, y = 0, z = 0, s = 0\ninv()

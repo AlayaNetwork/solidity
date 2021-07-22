@@ -10,4 +10,4 @@ contract C {
 	}
 }
 // ----
-// Warning 7812: (194-213): Assertion violation might happen here.
+// Warning 6328: (194-213): CHC: Assertion violation happens here.\nCounterexample:\n\nx = 2\np = 7719\n\n\nTransaction trace:\nconstructor()\nf(2, 7719)
