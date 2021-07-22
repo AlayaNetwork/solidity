@@ -700,7 +700,7 @@ bool CommandLineInterface::parseLibraryOption(string const& _input)
 			}
 			else if (addrString.length() != 40 && addrString.length() != 42)
 			{
-				serr() << "Invalid length for address for library \"" << libName << "\": " << addrString.length() << " instead of 40 characters." << endl;
+				serr() << "Invalid length for address for library \"" << libName << "\": " << addrString.length() << " instead of 42 characters." << endl;
 				return false;
 			}
 			if (!passesAddressChecksum(addrString, false))
